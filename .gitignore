@@ -1,0 +1,5 @@
+# User-specific files (generated during installation)
+native_host/com.google_drive_to_explorer.json
+
+# Keep the template
+!native_host/com.google_drive_to_explorer.json.template

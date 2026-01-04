@@ -1,0 +1,38 @@
+/* Button Container Injection Target */
+.a-s-tb-sc-Ja-Q-x.a-Ba-Ed.a-s-Ba-ic {
+    display: flex;
+    align-items: center;
+}
+
+/* Our Custom Button - Icon Style */
+.open-explorer-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin-left: 8px;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.1s;
+    user-select: none;
+    padding: 0;
+    outline: none;
+}
+
+.open-explorer-btn:hover {
+    background-color: rgba(95, 99, 104, 0.12);
+    /* Standard Google Hover */
+}
+
+.open-explorer-btn:active {
+    background-color: rgba(95, 99, 104, 0.8);
+}
+
+.open-explorer-btn img {
+    width: 32px;
+    height: 32px;
+    display: block;
+}

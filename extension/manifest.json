@@ -1,0 +1,47 @@
+{
+    "manifest_version": 3,
+    "name": "Google Drive to Explorer",
+    "version": "0.1",
+    "description": "Opens the current Google Drive folder in Windows Explorer.",
+    "permissions": [
+        "nativeMessaging",
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://drive.google.com/*"
+    ],
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icons/icon128.png",
+                "icons/icon48.png",
+                "icons/icon16.png"
+            ],
+            "matches": [
+                "https://drive.google.com/*"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://drive.google.com/*"
+            ],
+            "js": [
+                "contentScript.js"
+            ],
+            "css": [
+                "styles.css"
+            ]
+        }
+    ]
+}
