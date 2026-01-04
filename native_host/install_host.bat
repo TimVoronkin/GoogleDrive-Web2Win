@@ -2,7 +2,8 @@
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo Google Drive to Explorer - Installer
+echo           GoogleDrive-Web2Win
+echo         Native Host Installer
 echo ========================================
 echo.
 
@@ -17,10 +18,13 @@ set "MANIFEST_PATH=%CURRENT_DIR%com.google_drive_to_explorer.json"
 
 :: Prompt user for Extension ID
 echo.
-echo Please enter your Chrome Extension ID:
-echo (You can find it at chrome://extensions/ after loading the extension)
+echo INSTRUCTIONS:
+echo 1. Open Chrome and go to chrome://extensions/
+echo 2. Enable "Developer mode" in the top right corner.
+echo 3. Look for "GoogleDrive-Web2Win" in the list.
+echo 4. Copy the ID string (e.g., "abcdefghijklmnop...") associated with it.
 echo.
-set /p EXTENSION_ID="Extension ID: "
+set /p EXTENSION_ID="Please enter your Chrome Extension ID: "
 
 :: Validate input
 if "%EXTENSION_ID%"=="" (
@@ -67,7 +71,7 @@ reg add "%KEY_NAME%" /ve /t REG_SZ /d "%MANIFEST_PATH%" /f >nul
 if %ERRORLEVEL% EQU 0 (
     echo.
     echo ========================================
-    echo SUCCESS! Native Host installed.
+    echo     SUCCESS! Native Host installed.
     echo ========================================
     echo.
     echo Registry Key: %KEY_NAME%

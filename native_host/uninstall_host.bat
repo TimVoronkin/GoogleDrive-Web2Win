@@ -2,7 +2,8 @@
 setlocal
 
 echo ========================================
-echo Google Drive to Explorer - Uninstaller
+echo           GoogleDrive-Web2Win
+echo         Native Host Uninstaller
 echo ========================================
 echo.
 
@@ -56,7 +57,7 @@ if exist "%MANIFEST_FILE%" (
 :end
 echo.
 echo ========================================
-echo Uninstallation complete!
+echo         Uninstallation complete!
 echo ========================================
 echo.
 echo The extension will no longer work until you run install_host.bat again.

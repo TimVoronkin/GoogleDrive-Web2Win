@@ -1,7 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Google Drive to Explorer",
-    "version": "0.1",
+    "name": "GoogleDrive-Web2Win",
+    "author": "TimVoronkin",
+    "version": "0.2",
     "description": "Opens the current Google Drive folder in Windows Explorer.",
     "permissions": [
         "nativeMessaging",
