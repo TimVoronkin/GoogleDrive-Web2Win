@@ -29,11 +29,11 @@ def main():
             
             folder_id = message.get("folderId")
             folder_name = message.get("folderName")
+            drive_letter = message.get("driveLetter", "G")
             
             if folder_id and folder_name:
-                # Construct path: G:\.shortcut-targets-by-id\{folder ID}\{folder name}
-                # Note: Windows paths use backslashes
-                path = f"G:\\.shortcut-targets-by-id\\{folder_id}\\{folder_name}"
+                # Construct path: {drive_letter}:\.shortcut-targets-by-id\{folder ID}\{folder name}
+                path = f"{drive_letter}:\\.shortcut-targets-by-id\\{folder_id}\\{folder_name}"
                 
                 # Verify logic: The user asked for this specific path structure.
                 # Just in case, let's also try to open it even if name is slightly off? 
