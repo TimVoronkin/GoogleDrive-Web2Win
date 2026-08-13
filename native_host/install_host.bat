@@ -16,21 +16,23 @@ set "HOST_BAT_PATH=%CURRENT_DIR%host.bat"
 :: Path to the manifest file that will be created
 set "MANIFEST_PATH=%CURRENT_DIR%com.google_drive_to_explorer.json"
 
+set "DEFAULT_EXT_ID=mchnfkininhinkcocbigdejpknkpcdgf"
+
 :: Prompt user for Extension ID
 echo.
 echo INSTRUCTIONS:
 echo 1. Open Chrome and go to chrome://extensions/
 echo 2. Enable "Developer mode" in the top right corner.
 echo 3. Look for "GoogleDrive-Web2Win" in the list.
-echo 4. Copy the ID string (e.g., "abcdefghijklmnop...") associated with it.
 echo.
-set /p EXTENSION_ID="Please enter your Chrome Extension ID: "
+echo Default Extension ID: %DEFAULT_EXT_ID%
+set "INPUT_ID="
+set /p INPUT_ID="Please enter your Chrome Extension ID (Press ENTER for default [%DEFAULT_EXT_ID%]): "
 
-:: Validate input
-if "%EXTENSION_ID%"=="" (
-    echo ERROR: Extension ID cannot be empty!
-    pause
-    exit /b 1
+if "!INPUT_ID!"=="" (
+    set "EXTENSION_ID=!DEFAULT_EXT_ID!"
+) else (
+    set "EXTENSION_ID=!INPUT_ID!"
 )
 
 :: Create the manifest file

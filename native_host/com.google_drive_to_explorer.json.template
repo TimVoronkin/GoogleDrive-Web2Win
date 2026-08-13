@@ -1,0 +1,9 @@
+{
+    "name": "com.google_drive_to_explorer",
+    "description": "Native Host to open Google Drive folders in Explorer",
+    "path": "TARGET_HOST_BAT_PATH",
+    "type": "stdio",
+    "allowed_origins": [
+        "chrome-extension://TARGET_EXTENSION_ID/"
+    ]
+}

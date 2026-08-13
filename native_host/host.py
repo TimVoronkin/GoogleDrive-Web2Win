@@ -30,24 +30,23 @@ def main():
             folder_id = message.get("folderId")
             folder_name = message.get("folderName")
             drive_letter = message.get("driveLetter", "G")
+            full_path = message.get("fullPath")
+            open_mode = message.get("openMode", "fullPath")
             
-            if folder_id and folder_name:
-                # Construct path: {drive_letter}:\.shortcut-targets-by-id\{folder ID}\{folder name}
-                path = f"{drive_letter}:\\.shortcut-targets-by-id\\{folder_id}\\{folder_name}"
-                
-                # Verify logic: The user asked for this specific path structure.
-                # Just in case, let's also try to open it even if name is slightly off? 
-                # No, strict adherence to request first.
-                
-                # Check if path exists (optional, but good for debugging)
-                # We won't block execution if it doesn't exist, just let explorer try.
-                
-                send_message({"status": "Opening", "path": path})
-                
-                # Launch Explorer
-                subprocess.Popen(['explorer', path])
+            target_path = None
+
+            if open_mode == "fullPath" and full_path:
+                target_path = full_path
+            elif folder_id and folder_name:
+                target_path = f"{drive_letter}:\\.shortcut-targets-by-id\\{folder_id}\\{folder_name}"
+            elif full_path:
+                target_path = full_path
+
+            if target_path:
+                send_message({"status": "Opening", "path": target_path})
+                subprocess.Popen(['explorer', target_path])
             else:
-                send_message({"error": "Missing folderId or folderName"})
+                send_message({"error": "Missing folderId, folderName or fullPath"})
                 
         except Exception as e:
             send_message({"error": str(e)})

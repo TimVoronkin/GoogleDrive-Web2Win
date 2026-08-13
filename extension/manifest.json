@@ -2,20 +2,28 @@
     "manifest_version": 3,
     "name": "GoogleDrive-Web2Win",
     "author": "TimVoronkin",
-    "version": "0.2",
-    "description": "Opens the current Google Drive folder in Windows Explorer.",
+    "version": "1.0",
+    "description": "Opens Google Drive folders and files on Windows, extends path visibility.",
     "permissions": [
         "nativeMessaging",
         "activeTab",
         "scripting",
-        "storage"
+        "storage",
+        "identity"
     ],
     "action": {
         "default_popup": "popup.html"
     },
     "host_permissions": [
-        "https://drive.google.com/*"
+        "https://drive.google.com/*",
+        "https://www.googleapis.com/*"
     ],
+    "oauth2": {
+        "client_id": "290530430896-3isv5lll55g6ch2253ick5it7m2hl8vg.apps.googleusercontent.com",
+        "scopes": [
+            "https://www.googleapis.com/auth/drive.readonly"
+        ]
+    },
     "icons": {
         "16": "icons/icon16.png",
         "48": "icons/icon48.png",
@@ -26,7 +34,8 @@
             "resources": [
                 "icons/icon128.png",
                 "icons/icon48.png",
-                "icons/icon16.png"
+                "icons/icon16.png",
+                "icons/loading.gif"
             ],
             "matches": [
                 "https://drive.google.com/*"
