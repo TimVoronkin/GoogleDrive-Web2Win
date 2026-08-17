@@ -1,50 +1,20 @@
-/* Button Container Injection Target */
+/* =============================================================
+   GoogleDrive-Web2Win - Universal Navigation & Breadcrumbs
+   ============================================================= */
+
+/* Container Injection Targets */
 .a-s-tb-sc-Ja-Q-x.a-Ba-Ed.a-s-Ba-ic {
     display: flex;
     align-items: center;
 }
 
-/* Our Custom Button - Header Action Style */
-.open-explorer-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    margin-left: 8px;
-    border-radius: 50%;
-    background-color: transparent;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.15s ease;
-    user-select: none;
-    padding: 0;
-    outline: none;
-}
-
-.open-explorer-btn:hover {
-    background-color: rgba(95, 99, 104, 0.15);
-}
-
-.open-explorer-btn:active {
-    background-color: rgba(95, 99, 104, 0.3);
-}
-
-.open-explorer-btn img {
-    width: 24px;
-    height: 24px;
-    display: block;
-}
-
-/* -------------------------------------------------------------
- * Custom Full Path Statusbar & Breadcrumbs Styling
- * ------------------------------------------------------------- */
 .a-s-tb-sc-Ja-Q-pa,
 .o-Yc-j {
     flex: 1 1 auto !important;
     width: 100% !important;
 }
 
+/* Base Universal Statusbar Container */
 .web2win-statusbar-container {
     display: flex !important;
     align-items: center !important;
@@ -60,6 +30,21 @@
     overflow: hidden;
 }
 
+/* Embedded in Google Drive Bottom Location Bar (.LVhrj) */
+.LVhrj .web2win-statusbar-container {
+    padding: 0 10px !important;
+    height: 100% !important;
+    min-height: 38px;
+    max-height: 48px;
+    background: transparent !important;
+}
+
+.LVhrj:not(.YGHoCf) {
+    min-width: 280px !important;
+    max-width: 90vw !important;
+}
+
+/* Breadcrumbs horizontal scrolling wrapper */
 .web2win-breadcrumbs-wrapper {
     display: flex;
     align-items: center;
@@ -67,34 +52,36 @@
     gap: 4px;
     flex: 1 1 auto;
     min-width: 0;
-    padding-left: 12px;
+    padding-left: 4px;
+    padding-right: 8px;
     overflow-x: auto;
     scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 8px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 8px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0px, black 8px, black calc(100% - 8px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0px, black 8px, black calc(100% - 8px), transparent 100%);
 }
 
 .web2win-breadcrumbs-wrapper::-webkit-scrollbar {
     display: none;
 }
 
-/* Capsule Pill Item */
+/* Capsule Pill Items */
 .web2win-capsule {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
     border-radius: 16px;
-    background-color: transparent;
+    background-color: rgba(128, 128, 128, 0.08);
     color: inherit;
     text-decoration: none;
     font-weight: 500;
     font-size: 13px;
     line-height: 18px;
     white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
     cursor: default;
     border: none;
+    flex-shrink: 0;
 }
 
 .web2win-capsule.web2win-folder-capsule {
@@ -103,43 +90,34 @@
 
 .web2win-capsule:hover,
 .web2win-capsule.web2win-folder-capsule:hover {
-    background-color: rgba(128, 128, 128, 0.18);
+    background-color: rgba(128, 128, 128, 0.2);
     text-decoration: none;
 }
 
-.web2win-capsule-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-.web2win-capsule-icon svg {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
+.web2win-capsule:active {
+    transform: scale(0.98);
 }
 
 .web2win-separator {
     color: #80868b;
-    font-size: 12px;
-    margin: 0 2px;
+    font-size: 11px;
+    margin: 0 1px;
     flex-shrink: 0;
     user-select: none;
+    opacity: 0.8;
 }
 
-/* Action Buttons Container on Right */
+/* Action Buttons Container on the Right */
 .web2win-actions-container {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     margin-left: auto;
     padding-left: 8px;
     flex-shrink: 0;
 }
 
+/* Round Action Buttons */
 .web2win-action-btn {
     display: inline-flex;
     align-items: center;
@@ -147,30 +125,67 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: transparent;
+    background-color: rgba(128, 128, 128, 0);
     border: none;
     cursor: pointer;
     color: inherit;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, transform 0.1s ease;
     padding: 0;
     outline: none;
     position: relative;
+    flex-shrink: 0;
 }
 
 .web2win-action-btn:hover {
-    background-color: rgba(128, 128, 128, 0.2);
+    background-color: rgba(128, 128, 128, 0.22);
 }
 
 .web2win-action-btn:active {
     background-color: rgba(128, 128, 128, 0.35);
+    transform: scale(0.94);
 }
 
 .web2win-action-btn svg,
 .web2win-action-btn img {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: block;
     fill: currentColor;
+    pointer-events: none;
+}
+
+/* Native Selection Toolbar Button (.uEnUtd) */
+.web2win-toolbar-action {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.web2win-toolbar-btn {
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.web2win-toolbar-btn img {
+    width: 20px !important;
+    height: 20px !important;
+    display: block !important;
+}
+
+/* Loader Animation */
+.web2win-loader {
+    animation: web2win-spin 1s linear infinite;
+}
+
+@keyframes web2win-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Copy Toast Notification */
@@ -196,4 +211,4 @@
 .web2win-toast.show {
     opacity: 1;
     transform: translateY(0);
-}
+}

@@ -1,6 +1,7 @@
 // In-memory cache for individual node metadata with 3-minute TTL
 const nodeCache = new Map();
 const CACHE_TTL_MS = 3 * 60 * 1000; // 3 minutes
+let cachedUserRootId = null;
 
 function getCachedNode(id) {
     if (nodeCache.has(id)) {
@@ -34,16 +35,39 @@ function getAuthTokenInteractive() {
     });
 }
 
+/**
+ * Fetches and caches the user's My Drive root folder ID
+ */
+async function getUserRootId(token) {
+    if (cachedUserRootId) return cachedUserRootId;
+    try {
+        const resp = await fetch('https://www.googleapis.com/drive/v3/files/root?fields=id,name', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data && data.id) {
+                cachedUserRootId = data.id;
+                console.log("[GDrive-Tim Background] User root folder ID cached:", cachedUserRootId);
+                return cachedUserRootId;
+            }
+        }
+    } catch (e) {
+        console.warn("[GDrive-Tim Background] Failed to fetch root folder ID:", e);
+    }
+    return null;
+}
+
 // Listen for messages from contentScript
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "openFolder") {
-        const { folderId, folderName, fullPath, openModeOverride } = request;
+        const { folderId, folderName, fullPath, openModeOverride, openMode } = request;
 
         console.log(`[GDrive-Tim Background] Received request to open: ${folderName} (ID: ${folderId})`);
 
         chrome.storage.local.get(['driveLetter', 'openMode'], (result) => {
             const driveLetter = result.driveLetter || 'G';
-            const openMode = openModeOverride || result.openMode || 'fullPath';
+            const targetOpenMode = openModeOverride || openMode || result.openMode || 'fullPath';
             const hostName = "com.google_drive_to_explorer";
 
             chrome.runtime.sendNativeMessage(hostName, {
@@ -51,7 +75,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 folderName: folderName,
                 driveLetter: driveLetter,
                 fullPath: fullPath,
-                openMode: openMode
+                openMode: targetOpenMode
             },
                 function (response) {
                     if (chrome.runtime.lastError) {
@@ -79,6 +103,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 return;
             }
 
+            const rootId = await getUserRootId(token);
             const pathNodes = [];
             let currentId = fileId;
             let iterations = 0;
@@ -138,8 +163,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             pathNodes.reverse();
 
-            // Item is in My Drive if root node has no driveId (Shared Drive ID)
-            const isMyDrive = pathNodes.length > 0 && !pathNodes[0].driveId;
+            // Item is in My Drive if root node matches the user's root ID, or has no parent/driveId
+            let isMyDrive = false;
+            if (pathNodes.length > 0) {
+                const rootNode = pathNodes[0];
+                if (rootId && rootNode.id === rootId) {
+                    isMyDrive = true;
+                } else if (!rootNode.driveId && (rootNode.name === 'My Drive' || rootNode.name === 'Мій Диск' || (rootNode.parents && rootNode.parents.length === 0 && !rootId))) {
+                    isMyDrive = true;
+                }
+            }
 
             console.log(`[GDrive-Tim Background] Built path hierarchy (${pathNodes.length} nodes, isMyDrive: ${isMyDrive}):`, pathNodes);
             sendResponse({ success: true, pathNodes: pathNodes, isMyDrive: isMyDrive });
@@ -148,6 +181,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 });
-
-
-
