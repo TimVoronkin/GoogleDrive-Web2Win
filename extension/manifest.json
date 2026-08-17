@@ -32,10 +32,7 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "icons/icon128.png",
-                "icons/icon48.png",
-                "icons/icon16.png",
-                "icons/loading.gif"
+                "icons/*"
             ],
             "matches": [
                 "https://drive.google.com/*"

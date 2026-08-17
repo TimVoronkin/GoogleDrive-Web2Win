@@ -98,6 +98,35 @@
     transform: scale(0.98);
 }
 
+/* Capsule Icon Container */
+.web2win-capsule-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.web2win-capsule-icon.web2win-masked-icon {
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+}
+
+.web2win-capsule-icon svg,
+.web2win-capsule-icon img {
+    width: 16px;
+    height: 16px;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 .web2win-separator {
     color: #80868b;
     font-size: 11px;

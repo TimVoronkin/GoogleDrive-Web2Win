@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const driveRootInput = document.getElementById('driveRootName');
     const pathDepthSelect = document.getElementById('pathDepth');
     const openModeSelect = document.getElementById('openMode');
+    const showPathIconsCheckbox = document.getElementById('showPathIcons');
     const enableLoggingCheckbox = document.getElementById('enableLogging');
 
     function updateStatusUI(isEnabled) {
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Load saved settings
-    chrome.storage.local.get(['extensionEnabled', 'driveLetter', 'driveRootName', 'pathDepth', 'openMode', 'enableLogging'], (result) => {
+    chrome.storage.local.get(['extensionEnabled', 'driveLetter', 'driveRootName', 'pathDepth', 'openMode', 'showPathIcons', 'enableLogging'], (result) => {
         const isEnabled = result.extensionEnabled !== undefined ? result.extensionEnabled : true;
         extensionEnabledSwitch.checked = isEnabled;
         updateStatusUI(isEnabled);
@@ -51,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (result.openMode !== undefined) {
             openModeSelect.value = result.openMode;
+        }
+        if (result.showPathIcons !== undefined) {
+            showPathIconsCheckbox.checked = result.showPathIcons;
         }
         if (result.enableLogging !== undefined) {
             enableLoggingCheckbox.checked = result.enableLogging;
@@ -82,6 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save open mode
     openModeSelect.addEventListener('change', () => {
         chrome.storage.local.set({ openMode: openModeSelect.value });
+    });
+
+    // Save show path icons toggle
+    showPathIconsCheckbox.addEventListener('change', () => {
+        chrome.storage.local.set({ showPathIcons: showPathIconsCheckbox.checked });
     });
 
     // Save enable logging toggle

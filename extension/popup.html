@@ -95,18 +95,26 @@
                 <label for="openMode">Open in Explorer Method</label>
                 <div class="select-wrapper">
                     <select id="openMode">
-                        <option value="fullPath" selected>Full Path (G:\My Drive\...)</option>
-                        <option value="shortcut">Shortcut ID (.shortcut-targets-by-id)</option>
+                        <option value="fullPath" selected>G:\My Drive\&lt;Full Path&gt;</option>
+                        <option value="shortcut">G:\.shortcut-targets-by-id\&lt;Shortcut ID&gt;</option>
                     </select>
                 </div>
                 <span class="helper-text">Shared items always use Shortcut ID</span>
             </div>
 
             <div class="form-group checkbox-group">
+                <label for="showPathIcons" class="checkbox-label">
+                    <input type="checkbox" id="showPathIcons" checked />
+                    <span class="custom-checkbox"></span>
+                    <span>Show folders & files icons in path</span>
+                </label>
+            </div>
+
+            <div class="form-group checkbox-group">
                 <label for="enableLogging" class="checkbox-label">
                     <input type="checkbox" id="enableLogging" checked />
                     <span class="custom-checkbox"></span>
-                    <span>Enable Console Logs ([GDrive-Tim])</span>
+                    <span>Enable console logs [GDrive-Tim]</span>
                 </label>
             </div>
         </div>

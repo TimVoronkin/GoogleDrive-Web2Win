@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     continue;
                 }
 
-                const apiUrl = `https://www.googleapis.com/drive/v3/files/${currentId}?fields=id,name,parents,mimeType,driveId`;
+                const apiUrl = `https://www.googleapis.com/drive/v3/files/${currentId}?fields=id,name,parents,mimeType,driveId,iconLink,folderColorRgb,shared`;
 
                 try {
                     const resp = await fetch(apiUrl, {
@@ -144,7 +144,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         name: data.name || 'Untitled',
                         isFolder: data.mimeType === 'application/vnd.google-apps.folder',
                         parents: (data.parents || []).map(p => typeof p === 'object' ? p.id : p),
-                        driveId: data.driveId || null
+                        driveId: data.driveId || null,
+                        iconLink: data.iconLink || null,
+                        folderColorRgb: data.folderColorRgb || null,
+                        shared: data.shared === true
                     };
 
                     setCachedNode(currentId, node);

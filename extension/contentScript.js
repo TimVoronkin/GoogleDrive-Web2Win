@@ -39,7 +39,7 @@ function setCachedHierarchy(fileId, data) {
  */
 function getSettings() {
     return new Promise((resolve) => {
-        chrome.storage.local.get(['extensionEnabled', 'driveLetter', 'driveRootName', 'pathDepth', 'openMode', 'enableLogging'], (result) => {
+        chrome.storage.local.get(['extensionEnabled', 'driveLetter', 'driveRootName', 'pathDepth', 'openMode', 'showPathIcons', 'enableLogging'], (result) => {
             isLoggingEnabled = result.enableLogging !== undefined ? result.enableLogging : true;
             const settings = {
                 extensionEnabled: result.extensionEnabled !== undefined ? result.extensionEnabled : true,
@@ -47,6 +47,7 @@ function getSettings() {
                 driveRootName: (result.driveRootName !== undefined && result.driveRootName !== '') ? result.driveRootName : 'My Drive',
                 pathDepth: result.pathDepth !== undefined ? parseInt(result.pathDepth, 10) : 5,
                 openMode: result.openMode || 'fullPath',
+                showPathIcons: result.showPathIcons !== undefined ? result.showPathIcons : true,
                 enableLogging: isLoggingEnabled
             };
             resolve(settings);
@@ -359,6 +360,59 @@ function updateSelectionToolbar(settings) {
 }
 
 /**
+ * Creates capsule icon element based on node type, color, and settings
+ */
+function createCapsuleIcon(node, idx, isMyDrive) {
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'web2win-capsule-icon';
+
+    if (idx === 0 && isMyDrive) {
+        // Root My Drive Icon
+        const iconUrl = chrome.runtime.getURL('icons/icon_my-drive.svg');
+        iconSpan.classList.add('web2win-masked-icon');
+        iconSpan.style.webkitMaskImage = `url(${iconUrl})`;
+        iconSpan.style.maskImage = `url(${iconUrl})`;
+        iconSpan.style.backgroundColor = '#8F8F8F';
+        return iconSpan;
+    }
+
+    if (node.isFolder) {
+        const iconFile = node.shared ? 'icons/icon_folder_shared.svg' : 'icons/icon_folder.svg';
+        const iconUrl = chrome.runtime.getURL(iconFile);
+
+        iconSpan.classList.add('web2win-masked-icon');
+        iconSpan.style.webkitMaskImage = `url(${iconUrl})`;
+        iconSpan.style.maskImage = `url(${iconUrl})`;
+        iconSpan.style.backgroundColor = node.folderColorRgb || '#8F8F8F';
+    } else {
+        // File Icon
+        if (node.iconLink) {
+            const img = document.createElement('img');
+            img.src = node.iconLink;
+            img.alt = '';
+            img.referrerPolicy = 'no-referrer';
+            img.onerror = () => {
+                img.remove();
+                const iconUrl = chrome.runtime.getURL('icons/icon_file.svg');
+                iconSpan.classList.add('web2win-masked-icon');
+                iconSpan.style.webkitMaskImage = `url(${iconUrl})`;
+                iconSpan.style.maskImage = `url(${iconUrl})`;
+                iconSpan.style.backgroundColor = '#8F8F8F';
+            };
+            iconSpan.appendChild(img);
+        } else {
+            const iconUrl = chrome.runtime.getURL('icons/icon_file.svg');
+            iconSpan.classList.add('web2win-masked-icon');
+            iconSpan.style.webkitMaskImage = `url(${iconUrl})`;
+            iconSpan.style.maskImage = `url(${iconUrl})`;
+            iconSpan.style.backgroundColor = '#8F8F8F';
+        }
+    }
+
+    return iconSpan;
+}
+
+/**
  * Renders universal breadcrumb and action bar into a target parent container
  */
 function renderCustomBar(targetParentEl, targetNavEl, pathNodes, isMyDrive, settings) {
@@ -406,6 +460,12 @@ function renderCustomBar(targetParentEl, targetNavEl, pathNodes, isMyDrive, sett
             capsule.classList.add('web2win-folder-capsule');
             capsule.href = `https://drive.google.com/drive${uPrefix}/folders/${node.id}`;
             capsule.title = `Open folder: ${node.name}`;
+        }
+
+        // Add Icon if enabled
+        if (settings.showPathIcons && !node.isEllipsis) {
+            const iconEl = createCapsuleIcon(node, idx, isMyDrive);
+            capsule.appendChild(iconEl);
         }
 
         const textSpan = document.createElement('span');
