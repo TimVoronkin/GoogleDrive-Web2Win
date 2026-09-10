@@ -211,6 +211,109 @@ select:focus, input[type="text"]:focus {
     box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
 }
 
+/* Path Input Row (Explorer Style) */
+.path-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.path-field-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: #fbfbfc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.path-field-box:focus-within {
+    border-color: var(--border-focus);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
+}
+
+.drive-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.drive-select-wrapper select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: 4px 0 4px 2px;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-primary);
+    cursor: pointer;
+    width: auto;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.path-colon-slash {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    user-select: none;
+    margin: 0 2px 0 0;
+}
+
+.path-field-box input[type="text"] {
+    border: none;
+    background: transparent;
+    padding: 4px 4px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 0;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.auto-detect-btn {
+    background: #fbfbfc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+}
+
+.auto-detect-btn:hover {
+    background-color: rgba(26, 115, 232, 0.08);
+    border-color: var(--border-focus);
+}
+
+.auto-detect-btn img {
+    width: 16px;
+    height: 16px;
+    filter: invert(39%) sepia(8%) saturate(543%) hue-rotate(175deg) brightness(92%) contrast(87%);
+    transition: filter 0.2s;
+}
+
+.auto-detect-btn:hover img {
+    filter: invert(34%) sepia(85%) saturate(2250%) hue-rotate(205deg) brightness(95%) contrast(92%);
+}
+
+.auto-detect-btn.spinning img {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .helper-text {
     font-size: 10px;
     color: #80868b;

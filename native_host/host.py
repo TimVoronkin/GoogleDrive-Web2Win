@@ -27,6 +27,23 @@ def main():
             if not message:
                 break
             
+            action = message.get("action")
+            if action == "detectConfig":
+                try:
+                    from detect_drive import detect_google_drive
+                    config = detect_google_drive()
+                    send_message({"status": "ok", **config})
+                except Exception as ex:
+                    # Fallback to reading config.json if import fails
+                    config_file = os.path.join(os.path.dirname(__file__), "config.json")
+                    if os.path.exists(config_file):
+                        with open(config_file, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        send_message({"status": "ok", **data})
+                    else:
+                        send_message({"status": "error", "error": str(ex)})
+                continue
+
             folder_id = message.get("folderId")
             folder_name = message.get("folderName")
             drive_letter = message.get("driveLetter", "G")

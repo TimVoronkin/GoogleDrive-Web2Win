@@ -22,6 +22,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const openModeSelect = document.getElementById('openMode');
     const showPathIconsCheckbox = document.getElementById('showPathIcons');
     const enableLoggingCheckbox = document.getElementById('enableLogging');
+    const autoDetectBtn = document.getElementById('autoDetectBtn');
+    const openModeFullPathOpt = document.getElementById('openModeFullPathOpt');
+    const openModeShortcutOpt = document.getElementById('openModeShortcutOpt');
+
+    function updateOpenModeLabels() {
+        const letter = driveSelect.value || 'G';
+        const rootName = driveRootInput.value.trim() || 'My Drive';
+        if (openModeFullPathOpt) {
+            openModeFullPathOpt.textContent = `${letter}:\\${rootName}\\<Full Path>`;
+        }
+        if (openModeShortcutOpt) {
+            openModeShortcutOpt.textContent = `${letter}:\\.shortcut-targets-by-id\\<Shortcut ID>`;
+        }
+    }
+
+    function autoDetectSettings(showAnimation = true) {
+        if (showAnimation && autoDetectBtn) {
+            autoDetectBtn.classList.add('spinning');
+        }
+
+        const hostName = "com.google_drive_to_explorer";
+        chrome.runtime.sendNativeMessage(hostName, { action: "detectConfig" }, (response) => {
+            if (showAnimation && autoDetectBtn) {
+                setTimeout(() => autoDetectBtn.classList.remove('spinning'), 400);
+            }
+
+            if (chrome.runtime.lastError) {
+                console.warn("[GDrive-Tim Popup] Native messaging auto-detect warning:", chrome.runtime.lastError.message);
+                return;
+            }
+
+            if (response && (response.driveLetter || response.driveRootName)) {
+                if (response.driveLetter) {
+                    driveSelect.value = response.driveLetter;
+                }
+                if (response.driveRootName) {
+                    driveRootInput.value = response.driveRootName;
+                }
+                updateOpenModeLabels();
+
+                chrome.storage.local.set({
+                    driveLetter: driveSelect.value,
+                    driveRootName: driveRootInput.value.trim() || 'My Drive'
+                });
+                console.log("[GDrive-Tim Popup] Auto-detected settings applied:", response);
+            }
+        });
+    }
 
     function updateStatusUI(isEnabled) {
         if (isEnabled) {
@@ -59,7 +107,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.enableLogging !== undefined) {
             enableLoggingCheckbox.checked = result.enableLogging;
         }
+
+        updateOpenModeLabels();
+
+        // If settings were default/unset, attempt initial auto-detect
+        if (!result.driveLetter && result.driveRootName === undefined) {
+            autoDetectSettings(false);
+        }
     });
+
+    // Auto-detect button click listener
+    if (autoDetectBtn) {
+        autoDetectBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            autoDetectSettings(true);
+        });
+    }
 
     // Toggle master switch
     extensionEnabledSwitch.addEventListener('change', () => {
@@ -70,11 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Save drive letter
     driveSelect.addEventListener('change', () => {
+        updateOpenModeLabels();
         chrome.storage.local.set({ driveLetter: driveSelect.value });
     });
 
     // Save drive root folder name
     driveRootInput.addEventListener('input', () => {
+        updateOpenModeLabels();
         chrome.storage.local.set({ driveRootName: driveRootInput.value.trim() || 'My Drive' });
     });
 

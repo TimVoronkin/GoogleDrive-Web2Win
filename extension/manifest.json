@@ -3,7 +3,7 @@
   "name": "GoogleDrive-Web2Win",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwA17U+DCAhjPzM14d60eUqaz4Kgs2cDvhY6aiNFpetsH15H1fyLZZPms+g27qL85xSUQ5r4930HEYyE8Qxfb3vNenICgPx28RUrcRQEcYMS6H0O8wQI6OnrAsPeo0sft3eUJ2/rBea6GFQm6bB3/TH8jojICgkRq1Eml7jFksmWlEFwCajYvfLoYCH/GgAfTPJL7jfXzU79QWXUA8F7TD5cBCr77jgotHw/p3ifG+uITyUGS5bSqwqfnySVxbYRTnpYYMqNWrMsYZTkImy9qbF+6Vo9aF9X9RO0Z09bdY+65NM3LEOGUo5wR8acR/IMrcbwtqeHoLZicV4R/XeXS8QIDAQAB",
   "author": "TimVoronkin",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Opens Google Drive folders and files on Windows, extends path visibility.",
   "permissions": [
     "nativeMessaging",

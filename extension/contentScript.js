@@ -34,24 +34,56 @@ function setCachedHierarchy(fileId, data) {
     hierarchyCache.set(fileId, { data: data, timestamp: Date.now() });
 }
 
+function isContextValid() {
+    try {
+        return typeof chrome !== 'undefined' && !!chrome.runtime && !!chrome.runtime.id;
+    } catch (e) {
+        return false;
+    }
+}
+
 /**
  * Gets active settings from chrome.storage.local
  */
 function getSettings() {
     return new Promise((resolve) => {
-        chrome.storage.local.get(['extensionEnabled', 'driveLetter', 'driveRootName', 'pathDepth', 'openMode', 'showPathIcons', 'enableLogging'], (result) => {
-            isLoggingEnabled = result.enableLogging !== undefined ? result.enableLogging : true;
-            const settings = {
-                extensionEnabled: result.extensionEnabled !== undefined ? result.extensionEnabled : true,
-                driveLetter: result.driveLetter || 'G',
-                driveRootName: (result.driveRootName !== undefined && result.driveRootName !== '') ? result.driveRootName : 'My Drive',
-                pathDepth: result.pathDepth !== undefined ? parseInt(result.pathDepth, 10) : 5,
-                openMode: result.openMode || 'fullPath',
-                showPathIcons: result.showPathIcons !== undefined ? result.showPathIcons : true,
-                enableLogging: isLoggingEnabled
-            };
-            resolve(settings);
-        });
+        const defaultSettings = {
+            extensionEnabled: true,
+            driveLetter: 'G',
+            driveRootName: 'My Drive',
+            pathDepth: 5,
+            openMode: 'fullPath',
+            showPathIcons: true,
+            enableLogging: isLoggingEnabled
+        };
+
+        if (!isContextValid()) {
+            resolve(defaultSettings);
+            return;
+        }
+
+        try {
+            chrome.storage.local.get(['extensionEnabled', 'driveLetter', 'driveRootName', 'pathDepth', 'openMode', 'showPathIcons', 'enableLogging'], (result) => {
+                if (!isContextValid() || chrome.runtime.lastError) {
+                    resolve(defaultSettings);
+                    return;
+                }
+                const res = result || {};
+                isLoggingEnabled = res.enableLogging !== undefined ? res.enableLogging : true;
+                const settings = {
+                    extensionEnabled: res.extensionEnabled !== undefined ? res.extensionEnabled : true,
+                    driveLetter: res.driveLetter || 'G',
+                    driveRootName: (res.driveRootName !== undefined && res.driveRootName !== '') ? res.driveRootName : 'My Drive',
+                    pathDepth: res.pathDepth !== undefined ? parseInt(res.pathDepth, 10) : 5,
+                    openMode: res.openMode || 'fullPath',
+                    showPathIcons: res.showPathIcons !== undefined ? res.showPathIcons : true,
+                    enableLogging: isLoggingEnabled
+                };
+                resolve(settings);
+            });
+        } catch (e) {
+            resolve(defaultSettings);
+        }
     });
 }
 
@@ -92,12 +124,24 @@ async function fetchItemHierarchy(fileId) {
     const cached = getCachedHierarchy(fileId);
     if (cached) return cached;
 
+    if (!isContextValid()) return null;
+
     try {
         const bgResponse = await new Promise((resolve) => {
-            chrome.runtime.sendMessage({
-                action: "fetchHierarchy",
-                fileId: fileId
-            }, (res) => resolve(res));
+            try {
+                chrome.runtime.sendMessage({
+                    action: "fetchHierarchy",
+                    fileId: fileId
+                }, (res) => {
+                    if (chrome.runtime.lastError) {
+                        resolve(null);
+                    } else {
+                        resolve(res);
+                    }
+                });
+            } catch (e) {
+                resolve(null);
+            }
         });
 
         if (bgResponse && bgResponse.success && bgResponse.pathNodes && bgResponse.pathNodes.length > 0) {
@@ -564,6 +608,10 @@ function debouncedUpdateBreadcrumbBar() {
  * Unified Controller for Breadcrumbs and Selection Toolbar
  */
 async function updateBreadcrumbBar() {
+    if (!isContextValid()) {
+        try { if (typeof observer !== 'undefined') observer.disconnect(); } catch (e) { }
+        return;
+    }
     if (isUpdating) return;
     isUpdating = true;
 
@@ -664,17 +712,22 @@ async function updateBreadcrumbBar() {
 }
 
 // Listen for instant settings changes across all tabs without reload
-chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === 'local') {
-        gLog("Settings changed dynamically:", changes);
-        currentRenderedId = null; // force re-render
-        if (changes.extensionEnabled && !changes.extensionEnabled.newValue) {
-            restoreNativeElements();
-        } else {
-            debouncedUpdateBreadcrumbBar();
-        }
-    }
-});
+if (isContextValid()) {
+    try {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
+            if (!isContextValid()) return;
+            if (areaName === 'local') {
+                gLog("Settings changed dynamically:", changes);
+                currentRenderedId = null; // force re-render
+                if (changes.extensionEnabled && !changes.extensionEnabled.newValue) {
+                    restoreNativeElements();
+                } else {
+                    debouncedUpdateBreadcrumbBar();
+                }
+            }
+        });
+    } catch (e) { }
+}
 
 // Observe DOM mutations for URL changes, selection changes, and toolbar / bottom bar appearance
 const observer = new MutationObserver((mutations) => {

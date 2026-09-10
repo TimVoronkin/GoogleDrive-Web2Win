@@ -34,42 +34,46 @@
         <!-- Settings Section -->
         <div class="settings-section" id="settingsSection">
             <div class="form-group">
-                <label for="driveLetter">Drive Letter</label>
-                <div class="select-wrapper">
-                    <select id="driveLetter">
-                        <option value="A">A:</option>
-                        <option value="B">B:</option>
-                        <option value="C">C:</option>
-                        <option value="D">D:</option>
-                        <option value="E">E:</option>
-                        <option value="F">F:</option>
-                        <option value="G" selected>G:</option>
-                        <option value="H">H:</option>
-                        <option value="I">I:</option>
-                        <option value="J">J:</option>
-                        <option value="K">K:</option>
-                        <option value="L">L:</option>
-                        <option value="M">M:</option>
-                        <option value="N">N:</option>
-                        <option value="O">O:</option>
-                        <option value="P">P:</option>
-                        <option value="Q">Q:</option>
-                        <option value="R">R:</option>
-                        <option value="S">S:</option>
-                        <option value="T">T:</option>
-                        <option value="U">U:</option>
-                        <option value="V">V:</option>
-                        <option value="W">W:</option>
-                        <option value="X">X:</option>
-                        <option value="Y">Y:</option>
-                        <option value="Z">Z:</option>
-                    </select>
+                <label for="driveLetter">Google Drive Path</label>
+                <div class="path-input-row">
+                    <div class="path-field-box">
+                        <div class="drive-select-wrapper">
+                            <select id="driveLetter">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G" selected>G</option>
+                                <option value="H">H</option>
+                                <option value="I">I</option>
+                                <option value="J">J</option>
+                                <option value="K">K</option>
+                                <option value="L">L</option>
+                                <option value="M">M</option>
+                                <option value="N">N</option>
+                                <option value="O">O</option>
+                                <option value="P">P</option>
+                                <option value="Q">Q</option>
+                                <option value="R">R</option>
+                                <option value="S">S</option>
+                                <option value="T">T</option>
+                                <option value="U">U</option>
+                                <option value="V">V</option>
+                                <option value="W">W</option>
+                                <option value="X">X</option>
+                                <option value="Y">Y</option>
+                                <option value="Z">Z</option>
+                            </select>
+                        </div>
+                        <span class="path-colon-slash">:\</span>
+                        <input type="text" id="driveRootName" value="My Drive" placeholder="My Drive / Мій Диск" />
+                    </div>
+                    <button id="autoDetectBtn" class="auto-detect-btn" title="Auto-detect Google Drive Settings">
+                        <img src="icons/icon_autorenew.svg" alt="Auto-detect" />
+                    </button>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label for="driveRootName">Drive Root Folder Name</label>
-                <input type="text" id="driveRootName" value="My Drive" placeholder="e.g. My Drive or Мій Диск" />
             </div>
 
             <div class="form-group">
@@ -95,8 +99,8 @@
                 <label for="openMode">Open in Explorer Method</label>
                 <div class="select-wrapper">
                     <select id="openMode">
-                        <option value="fullPath" selected>G:\My Drive\&lt;Full Path&gt;</option>
-                        <option value="shortcut">G:\.shortcut-targets-by-id\&lt;Shortcut ID&gt;</option>
+                        <option value="fullPath" id="openModeFullPathOpt" selected>G:\My Drive\<Full Path></option>
+                        <option value="shortcut" id="openModeShortcutOpt">G:\.shortcut-targets-by-id\<Shortcut ID></option>
                     </select>
                 </div>
                 <span class="helper-text">Shared items always use Shortcut ID</span>

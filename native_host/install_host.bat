@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+chcp 65001 >nul
 
 echo ========================================================
 echo   GoogleDrive-Web2Win - Native Host Installer
@@ -46,8 +47,36 @@ goto :done
 
 :py_ok
 echo [OK] Python found in system.
+echo.
+echo [INFO] Detecting Google Drive Desktop installation...
+python "%CURRENT_DIR%detect_drive.py" >nul 2>&1
+
+if exist "%CURRENT_DIR%config.json" (
+    findstr /C:"\"installed\": true" "%CURRENT_DIR%config.json" >nul 2>&1
+    if !ERRORLEVEL! EQU 0 (
+        echo [SUCCESS] Google Drive Desktop detected successfully!
+        for /f "tokens=2 delims=:," %%A in ('findstr /C:"\"driveLetter\"" "%CURRENT_DIR%config.json"') do (
+            set "DL=%%~A"
+            set "DL=!DL:"=!"
+            set "DL=!DL: =!"
+        )
+        for /f "tokens=2 delims=:" %%B in ('findstr /C:"\"driveRootName\"" "%CURRENT_DIR%config.json"') do (
+            set "DR=%%~B"
+            set "DR=!DR:"=!"
+            set "DR=!DR:~1!"
+        )
+        echo        Drive Letter: !DL!:
+        echo        Root Folder:  !DR!
+    ) else (
+        echo [WARNING] Google Drive Desktop was not detected on this computer.
+        echo           Please make sure Google Drive Desktop is installed and running.
+    )
+) else (
+    echo [WARNING] Could not run Google Drive detection script.
+)
 
 :done
 echo.
 echo Press any key to close this window...
 pause >nul
+
