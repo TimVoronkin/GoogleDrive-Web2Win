@@ -3,3 +3,7 @@ native_host/com.google_drive_to_explorer.json
 
 # Keep the template
 !native_host/com.google_drive_to_explorer.json.template
+
+# Extension files
+extension.pem
+extension.crx

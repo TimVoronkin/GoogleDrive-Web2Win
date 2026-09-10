@@ -107,6 +107,8 @@ async function fetchItemHierarchy(fileId) {
             };
             setCachedHierarchy(fileId, data);
             return data;
+        } else if (bgResponse && bgResponse.error) {
+            gWarn("Hierarchy fetch error for ID:", fileId, bgResponse.error);
         }
     } catch (e) {
         gError("Error sending message to background script:", e);
@@ -611,12 +613,13 @@ async function updateBreadcrumbBar() {
             return;
         }
 
-        // If activeId already rendered in all visible target parents, skip
-        const allAlreadyRendered = targets.every(t =>
-            currentRenderedId === activeId && t.parent.querySelector('.web2win-statusbar-container')
-        );
-        if (allAlreadyRendered) {
-            return;
+        // If activeId already processed in all visible target parents or already attempted, skip
+        if (currentRenderedId === activeId) {
+            const barExists = targets.some(t => t.parent.querySelector('.web2win-statusbar-container'));
+            const loaderExists = targets.some(t => t.parent.querySelector('.web2win-loader'));
+            if (barExists || !loaderExists) {
+                return;
+            }
         }
 
         currentRenderedId = activeId;
@@ -674,7 +677,34 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 });
 
 // Observe DOM mutations for URL changes, selection changes, and toolbar / bottom bar appearance
-const observer = new MutationObserver(() => {
+const observer = new MutationObserver((mutations) => {
+    // Ignore DOM mutations caused by our own custom extension elements
+    const isSelfMutation = mutations.every(m => {
+        const t = m.target;
+        if (t && t.classList && (
+            t.classList.contains('web2win-statusbar-container') ||
+            t.classList.contains('web2win-loader') ||
+            t.classList.contains('web2win-toast') ||
+            t.classList.contains('web2win-toolbar-action') ||
+            t.closest('.web2win-statusbar-container, .web2win-toolbar-action')
+        )) {
+            return true;
+        }
+        for (const added of m.addedNodes) {
+            if (added.nodeType === 1 && added.classList && added.classList.contains('web2win-loader')) {
+                return true;
+            }
+        }
+        for (const removed of m.removedNodes) {
+            if (removed.nodeType === 1 && removed.classList && removed.classList.contains('web2win-loader')) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (isSelfMutation) return;
+
     debouncedUpdateBreadcrumbBar();
 });
 

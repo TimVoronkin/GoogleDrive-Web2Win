@@ -25,11 +25,12 @@ function getAuthTokenInteractive() {
     return new Promise((resolve) => {
         chrome.identity.getAuthToken({ interactive: true }, (token) => {
             if (chrome.runtime.lastError) {
-                console.error("[GDrive-Tim Background] chrome.identity error:", chrome.runtime.lastError.message);
-                resolve(null);
+                const err = chrome.runtime.lastError.message;
+                console.error("[GDrive-Tim Background] chrome.identity error:", err);
+                resolve({ token: null, error: err });
             } else {
                 console.log("[GDrive-Tim Background] OAuth Token retrieved successfully!");
-                resolve(token);
+                resolve({ token: token, error: null });
             }
         });
     });
@@ -96,10 +97,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log(`[GDrive-Tim Background] fetchHierarchy requested for ID: ${fileId}`);
 
         (async () => {
-            const token = await getAuthTokenInteractive();
+            const { token, error: authError } = await getAuthTokenInteractive();
             if (!token) {
-                console.error("[GDrive-Tim Background] Unable to obtain OAuth token via chrome.identity.");
-                sendResponse({ success: false, error: "OAuth token not available" });
+                console.error("[GDrive-Tim Background] Unable to obtain OAuth token via chrome.identity:", authError);
+                sendResponse({ success: false, error: `OAuth token error: ${authError || 'Unknown error'}` });
                 return;
             }
 

@@ -1,45 +1,18 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo ========================================
-echo           GoogleDrive-Web2Win
-echo         Native Host Installer
-echo ========================================
+echo ========================================================
+echo   GoogleDrive-Web2Win - Native Host Installer
+echo ========================================================
+echo.
+echo This script registers the Chrome extension in Windows to open folders in Explorer.
 echo.
 
-:: Get the current directory (where this script is)
 set "CURRENT_DIR=%~dp0"
-
-:: Path to host.bat (absolute)
 set "HOST_BAT_PATH=%CURRENT_DIR%host.bat"
-
-:: Path to the manifest file that will be created
 set "MANIFEST_PATH=%CURRENT_DIR%com.google_drive_to_explorer.json"
+set "EXTENSION_ID=flnbloncdemcocjfkognmgkgnjoaajmf"
 
-set "DEFAULT_EXT_ID=mchnfkininhinkcocbigdejpknkpcdgf"
-
-:: Prompt user for Extension ID
-echo.
-echo INSTRUCTIONS:
-echo 1. Open Chrome and go to chrome://extensions/
-echo 2. Enable "Developer mode" in the top right corner.
-echo 3. Look for "GoogleDrive-Web2Win" in the list.
-echo.
-echo Default Extension ID: %DEFAULT_EXT_ID%
-set "INPUT_ID="
-set /p INPUT_ID="Please enter your Chrome Extension ID (Press ENTER for default [%DEFAULT_EXT_ID%]): "
-
-if "!INPUT_ID!"=="" (
-    set "EXTENSION_ID=!DEFAULT_EXT_ID!"
-) else (
-    set "EXTENSION_ID=!INPUT_ID!"
-)
-
-:: Create the manifest file
-echo.
-echo Creating manifest file...
-
-:: Write the JSON file directly
 (
 echo {
 echo     "name": "com.google_drive_to_explorer",
@@ -52,40 +25,29 @@ echo     ]
 echo }
 ) > "%MANIFEST_PATH%"
 
-if exist "%MANIFEST_PATH%" (
-    echo Manifest configured successfully!
-    echo   - Path: %HOST_BAT_PATH%
-    echo   - Extension ID: %EXTENSION_ID%
-    echo.
-) else (
-    echo [ERROR] Failed to create manifest file!
-    pause
-    exit /b 1
-)
-
-:: Define the Registry Key Name
 set "KEY_NAME=HKCU\Software\Google\Chrome\NativeMessagingHosts\com.google_drive_to_explorer"
+reg add "%KEY_NAME%" /ve /t REG_SZ /d "%MANIFEST_PATH%" /f >nul 2>&1
 
-:: Register in Windows Registry
-echo Registering Native Host in Windows Registry...
-reg add "%KEY_NAME%" /ve /t REG_SZ /d "%MANIFEST_PATH%" /f >nul
+if %ERRORLEVEL% EQU 0 goto :reg_ok
+echo [ERROR] Failed to update Windows Registry.
+goto :check_python
 
-if %ERRORLEVEL% EQU 0 (
-    echo.
-    echo ========================================
-    echo     SUCCESS! Native Host installed.
-    echo ========================================
-    echo.
-    echo Registry Key: %KEY_NAME%
-    echo Manifest: %MANIFEST_PATH%
-    echo.
-    echo You can now use the extension in Chrome!
-    echo.
-) else (
-    echo.
-    echo ERROR: Failed to register in registry.
-    echo Try running this script as Administrator.
-    echo.
-)
+:reg_ok
+echo [SUCCESS] Extension successfully registered in Windows!
 
-pause
+:check_python
+echo.
+python --version >nul 2>&1
+if %ERRORLEVEL% EQU 0 goto :py_ok
+echo [WARNING] Python was not found on this computer!
+echo To use the Open in Explorer feature, please download Python from https://www.python.org
+echo and make sure to check "Add Python to PATH" during installation.
+goto :done
+
+:py_ok
+echo [OK] Python found in system.
+
+:done
+echo.
+echo Press any key to close this window...
+pause >nul

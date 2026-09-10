@@ -1,58 +1,47 @@
 {
-    "manifest_version": 3,
-    "name": "GoogleDrive-Web2Win",
-    "author": "TimVoronkin",
-    "version": "1.1",
-    "description": "Opens Google Drive folders and files on Windows, extends path visibility.",
-    "permissions": [
-        "nativeMessaging",
-        "activeTab",
-        "scripting",
-        "storage",
-        "identity"
-    ],
-    "action": {
-        "default_popup": "popup.html"
-    },
-    "host_permissions": [
-        "https://drive.google.com/*",
-        "https://www.googleapis.com/*"
-    ],
-    "oauth2": {
-        "client_id": "290530430896-3isv5lll55g6ch2253ick5it7m2hl8vg.apps.googleusercontent.com",
-        "scopes": [
-            "https://www.googleapis.com/auth/drive.readonly"
-        ]
-    },
-    "icons": {
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-    },
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "icons/*"
-            ],
-            "matches": [
-                "https://drive.google.com/*"
-            ]
-        }
-    ],
-    "background": {
-        "service_worker": "background.js"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "https://drive.google.com/*"
-            ],
-            "js": [
-                "contentScript.js"
-            ],
-            "css": [
-                "styles.css"
-            ]
-        }
-    ]
+  "manifest_version": 3,
+  "name": "GoogleDrive-Web2Win",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwA17U+DCAhjPzM14d60eUqaz4Kgs2cDvhY6aiNFpetsH15H1fyLZZPms+g27qL85xSUQ5r4930HEYyE8Qxfb3vNenICgPx28RUrcRQEcYMS6H0O8wQI6OnrAsPeo0sft3eUJ2/rBea6GFQm6bB3/TH8jojICgkRq1Eml7jFksmWlEFwCajYvfLoYCH/GgAfTPJL7jfXzU79QWXUA8F7TD5cBCr77jgotHw/p3ifG+uITyUGS5bSqwqfnySVxbYRTnpYYMqNWrMsYZTkImy9qbF+6Vo9aF9X9RO0Z09bdY+65NM3LEOGUo5wR8acR/IMrcbwtqeHoLZicV4R/XeXS8QIDAQAB",
+  "author": "TimVoronkin",
+  "version": "1.1",
+  "description": "Opens Google Drive folders and files on Windows, extends path visibility.",
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "scripting",
+    "storage",
+    "identity"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "host_permissions": [
+    "https://drive.google.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "290530430896-3isv5lll55g6ch2253ick5it7m2hl8vg.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/drive.readonly"]
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://drive.google.com/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://drive.google.com/*"],
+      "js": ["contentScript.js"],
+      "css": ["styles.css"]
+    }
+  ]
 }

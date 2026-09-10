@@ -1,65 +1,32 @@
 @echo off
 setlocal
 
-echo ========================================
-echo           GoogleDrive-Web2Win
-echo         Native Host Uninstaller
-echo ========================================
+echo ========================================================
+echo   GoogleDrive-Web2Win - Native Host Uninstaller
+echo ========================================================
+echo.
+echo This script removes Native Host registration from Windows Registry.
 echo.
 
-:: Define the Registry Key Name
 set "KEY_NAME=HKCU\Software\Google\Chrome\NativeMessagingHosts\com.google_drive_to_explorer"
-
-:: Get the current directory
 set "CURRENT_DIR=%~dp0"
-
-:: Path to the manifest file
 set "MANIFEST_FILE=%CURRENT_DIR%com.google_drive_to_explorer.json"
 
-echo This will:
-echo   1. Remove the Native Host from Windows Registry
-echo   2. Delete com.google_drive_to_explorer.json file
-echo.
-echo Press any key to continue or close this window to cancel...
-pause >nul
-
-:: Step 1: Delete Registry Key
-echo.
-echo 1. Removing registry key...
 reg query "%KEY_NAME%" >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-    reg delete "%KEY_NAME%" /f >nul 2>&1
-    if %ERRORLEVEL% EQU 0 (
-        echo   [OK] Registry key removed successfully.
-    ) else (
-        echo   [ERROR] Failed to remove registry key.
-    )
-) else (
-    echo   [INFO] Registry key not found. It may already be uninstalled.
-)
+if %ERRORLEVEL% NEQ 0 goto :no_reg
+reg delete "%KEY_NAME%" /f >nul 2>&1
+echo [OK] Registry entry successfully removed.
+goto :del_file
 
-:: Step 2: Delete manifest file
-echo.
-echo 2. Deleting manifest file...
+:no_reg
+echo [INFO] Registry entry not found (may already be removed).
 
+:del_file
 if exist "%MANIFEST_FILE%" (
     del "%MANIFEST_FILE%" 2>nul
-    if exist "%MANIFEST_FILE%" (
-        echo   [ERROR] Cannot delete file - it may be in use.
-        echo   [INFO] Close any editors that have this file open and try again.
-    ) else (
-        echo   [OK] Manifest file deleted.
-    )
-) else (
-    echo   [INFO] Manifest file not found (already deleted?)
+    echo [OK] Manifest configuration file deleted.
 )
 
-:end
 echo.
-echo ========================================
-echo         Uninstallation complete!
-echo ========================================
-echo.
-echo The extension will no longer work until you run install_host.bat again.
-echo.
-pause
+echo Uninstallation complete. Press any key to close this window...
+pause >nul
