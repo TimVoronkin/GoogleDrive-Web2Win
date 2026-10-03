@@ -20,7 +20,7 @@
     "https://www.googleapis.com/*"
   ],
   "oauth2": {
-    "client_id": "290530430896-3isv5lll55g6ch2253ick5it7m2hl8vg.apps.googleusercontent.com",
+    "client_id": "186283010005-i5k35clgvnq8fs37fdapt410vut7jpk6.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/drive.readonly"]
   },
   "icons": {
